@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tuni — Device Data Transfer</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1020;
+        --panel: #151b31;
+        --panel-2: #1e2540;
+        --text: #ebf0ff;
+        --muted: #9eadcf;
+        --primary: #62a7ff;
+        --ok: #5be37f;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(circle at top left, #121a36, var(--bg) 55%);
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 920px;
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+
+      h1 { margin: 0 0 .4rem; font-size: 2rem; }
+      p { color: var(--muted); margin-top: 0; }
+
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid #2a345e;
+        border-radius: 14px;
+        padding: 1rem;
+      }
+
+      .row { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: .7rem; }
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: .6rem .9rem;
+        background: #2a345e;
+        color: var(--text);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button.primary { background: var(--primary); color: #071029; }
+      button:disabled { opacity: .5; cursor: not-allowed; }
+
+      textarea, input[type="text"] {
+        width: 100%;
+        min-height: 88px;
+        border-radius: 10px;
+        border: 1px solid #354374;
+        background: #0f1530;
+        color: var(--text);
+        padding: .7rem;
+        resize: vertical;
+      }
+
+      #messageInput { min-height: 120px; }
+      .status { color: var(--muted); font-size: .92rem; margin-top: .3rem; }
+      .status.connected { color: var(--ok); font-weight: 600; }
+      .receive-box { min-height: 150px; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .footnote { margin-top: 1rem; font-size: .88rem; color: var(--muted); }
+      code { background: #0f1530; padding: 2px 6px; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Tuni</h1>
+      <p>
+        Peer-to-peer device data transfer in your browser using WebRTC data channels.
+      </p>
+
+      <div class="grid">
+        <section class="card">
+          <h2>1) Connection setup</h2>
+          <div class="row">
+            <button id="hostBtn" class="primary">Create session (Host)</button>
+            <button id="joinBtn">Join session (Guest)</button>
+          </div>
+
+          <label for="localSignal">Your signaling payload</label>
+          <textarea id="localSignal" readonly placeholder="Create/Join a session to generate payload..."></textarea>
+          <div class="row">
+            <button id="copyLocal">Copy payload</button>
+          </div>
+
+          <label for="remoteSignal">Paste remote signaling payload</label>
+          <textarea id="remoteSignal" placeholder="Paste from the other device..."></textarea>
+          <div class="row">
+            <button id="applyRemote" class="primary">Apply remote payload</button>
+          </div>
+          <div id="status" class="status">Not connected</div>
+        </section>
+
+        <section class="card">
+          <h2>2) Send / Receive data</h2>
+          <label for="messageInput">Data to send</label>
+          <textarea id="messageInput" placeholder="Type text or paste JSON/data..."></textarea>
+          <div class="row">
+            <button id="sendBtn" class="primary" disabled>Send data</button>
+            <button id="clearBtn">Clear received</button>
+          </div>
+
+          <h3>Received data</h3>
+          <div id="received" class="receive-box">No data yet.</div>
+        </section>
+      </div>
+
+      <p class="footnote">
+        Tuni uses manual signaling (copy/paste). For production, replace this with a signaling server.
+      </p>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
